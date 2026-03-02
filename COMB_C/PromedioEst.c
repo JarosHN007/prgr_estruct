@@ -1,7 +1,6 @@
 #include <stdio.h>
 
 int main(void) {
-    setvbuf(stdout, NULL, _IONBF, 0);
     printf("Hello, World!\n");
     int estudiante;
 
@@ -30,8 +29,8 @@ int main(void) {
         if (promediofinal < 65  ) {
             printf("¡¡¡TE QUEDASTE JAJAJA!!! \n");
         } else {
-                printf("¡¡¡PASASTE JAJAJA!!! \n");
-            }
+            printf("¡¡¡PASASTE JAJAJA!!! \n");
+        }
 
     }
     return 0;
