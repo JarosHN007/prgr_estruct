@@ -80,6 +80,7 @@ void llenarmemorias(char caracter, char *pntr, int tamañoarreglo, int espacio, 
             // Usamos *posExtra para escribir en la posición actual
             *(pntrExtra + (*posExtra)) = caracter;
             // Aumentamos el valor de la posición en el main
+
             (*posExtra)++;
         }
     }
