@@ -1,34 +1,56 @@
 #include <stdio.h>
 
-struct Cliente {
-    int id;
+#define MAX 3
+
+struct Cola {
+    int clientes[MAX];
+    int frente;
+    int final;
 };
 
-// Función para llenar la cola/fila de clientes usando FOR
-void llenarCola(struct Cliente *p, int cantidad) {
-    for (int i = 0; i < cantidad; i++) {
-        (p + i)->id = 100 + (i + 1); // 101, 102, 103...
-        printf("Llego el Cliente ID: %d\n", (p + i)->id);
+// Meter clientes (ENQUEUE)
+void encolar(struct Cola *q, int id) {
+    if (q->final < MAX - 1) { //Evitando el Desbordamiento
+        q->final++;
+
+        *(q->clientes + q->final) = id;
+
+        printf("Llego el Cliente ID: %d (Posicion del arreglo: %d)\n", id, q->final);
+    } else {
+        printf("Fila llena. Cliente %d queda en espera \n", id);
+    }
+}
+
+// Atender al primero que llego (DEQUEUE)
+void desencolar(struct Cola *q) {
+    if (q->frente <= q->final) {
+        printf("ATENDIENDO A: %d\n", *(q->clientes + q->frente));
+
+        q->frente++; // El FIFO sucede aquí: nos movemos al siguiente
+
+    } else {
+        printf("No hay nadie mas en la fila.\n");
     }
 }
 
 int main() {
-    struct Cliente fila[3];
-    struct Cliente *p_frente = &fila[0]; // El que será atendido
+    struct Cola fila = {{0}, 0, -1}; // Inicializamos el struct
 
-    printf("--- LLEGANDO LOS CLIENTES ---\n");
-    llenarCola(p_frente, 3); // Llenamos con los clientes que van llegando, en este caso 3
+    printf("------------ENCOLAR----------\n");
 
-    printf("\n--- DEMOSTRACION FIFO ---\n");
+    printf("--- LLEGANDO CLIENTES ---\n");
+    encolar(&fila, 101);
+    encolar(&fila, 102);
+    encolar(&fila, 103);
+    encolar(&fila, 104); // Este ya no cabe (MAX es 3)
 
-    // AQUÍ SUCEDE EL FIFO: First In, First Out
-    for (int i = 0; i < 2; i++) {
-        printf("SE ATIENDE AL PRIMERO QUE LLEGA, ATENDIENDO A: %d\n", p_frente->id);
+    printf("\n------------DESENCOLAR------------\n");
 
-        p_frente++; // <--- ESTO ES EL FIFO, NOS MOVEMOS AL SIGUIENTE QUE LLEGO ANTES QUE LOS DEMAS
+    printf("--- ATENDIENDO (FIFO) ---\n");
+    desencolar(&fila); // Atiende al 101
+    desencolar(&fila); // Atiende al 102
 
-        printf("  Siguiente en espera ahora es: %d\n", p_frente->id);
-    }
+    printf("\nSiguiente cliente esperando: %d\n", *(fila.clientes + fila.frente));
 
     return 0;
 }
