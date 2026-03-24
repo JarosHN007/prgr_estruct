@@ -9,24 +9,25 @@ struct Cola {
 };
 
 // Meter clientes (ENQUEUE)
-void encolar(struct Cola *q, int id) {
-    if (q->final < MAX - 1) { //Evitando el Desbordamiento
-        q->final++;
+void encolar(struct Cola *structCola, int id) {
+    if (structCola->final < MAX - 1) { //Evitando el Desbordamiento
+        structCola->final++; //Otra forma de escribirlo es (*q).final++;
 
-        *(q->clientes + q->final) = id;
+        *(structCola->clientes + structCola->final) = id; //Otra forma de escribirlo es q->clientes[q->final]
+                                                          //Otra forma tambien (*q).clientes[(*q).final] = id;
 
-        printf("Llego el Cliente ID: %d (Posicion del arreglo: %d)\n", id, q->final);
+        printf("Llego el Cliente ID: %d (Posicion del arreglo: %d)\n", id, structCola->final);
     } else {
         printf("Fila llena. Cliente %d queda en espera \n", id);
     }
 }
 
 // Atender al primero que llego (DEQUEUE)
-void desencolar(struct Cola *q) {
-    if (q->frente <= q->final) {
-        printf("ATENDIENDO A: %d\n", *(q->clientes + q->frente));
+void desencolar(struct Cola *structCola) {
+    if (structCola->frente <= structCola->final) {
+        printf("ATENDIENDO A: %d\n", *(structCola->clientes + structCola->frente));
 
-        q->frente++; // El FIFO sucede aquí: nos movemos al siguiente
+        structCola->frente++; // El FIFO sucede aquí: nos movemos al siguiente
 
     } else {
         printf("No hay nadie mas en la fila.\n");
@@ -35,22 +36,32 @@ void desencolar(struct Cola *q) {
 
 int main() {
     struct Cola fila = {{0}, 0, -1}; // Inicializamos el struct
+    int menu, idCliente;
 
-    printf("------------ENCOLAR----------\n");
+    do {
+        printf("\n=======Menu=======\n");
+        printf("1) Encolar\n");
+        printf("2) Desencolar\n");
+        printf("3) Salir\n");
+        scanf(" %d", &menu);
+        switch (menu) {
+            case 1:
+                printf("Ingrese el ID del cliente: \n");
+                scanf("%d", &idCliente);
+                encolar(&fila, idCliente);
+                break;
+            case 2:
+                desencolar(&fila);
+                break;
+            case 3:
+                printf("Se cerro caja...\n");
+                break;
+        }
+        if (menu != 3 && fila.frente <= fila.final) {
+            printf("El siguiente Cliente en espera: %d\n", *(fila.clientes + fila.frente));
+        }
+    } while (menu != 3);
 
-    printf("--- LLEGANDO CLIENTES ---\n");
-    encolar(&fila, 101);
-    encolar(&fila, 102);
-    encolar(&fila, 103);
-    encolar(&fila, 104); // Este ya no cabe (MAX es 3)
-
-    printf("\n------------DESENCOLAR------------\n");
-
-    printf("--- ATENDIENDO (FIFO) ---\n");
-    desencolar(&fila); // Atiende al 101
-    desencolar(&fila); // Atiende al 102
-
-    printf("\nSiguiente cliente esperando: %d\n", *(fila.clientes + fila.frente));
 
     return 0;
 }
